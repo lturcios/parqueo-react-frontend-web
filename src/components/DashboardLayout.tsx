@@ -155,7 +155,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         >
           <div 
             className="w-64 h-full bg-card p-6 flex flex-col animate-in slide-in-from-left duration-300"
-            onClick={e => e.stopPropagation()}
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-8">
                <h1 className="text-2xl font-bold text-primary flex items-center gap-2">

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../lib/api';
-import type { Movement, MovementsResponse } from '../types/index';
+import type { MovementsResponse } from '../types/index';
 import { 
   Search, 
   Filter, 
@@ -14,9 +14,7 @@ import {
   CheckCircle2, 
   AlertCircle, 
   Loader2,
-  Clock,
-  MoreVertical,
-  History
+  Clock
 } from 'lucide-react';
 import { formatCurrency, cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -111,7 +109,7 @@ export default function Movements() {
                 type="date"
                 className="w-full pl-10 pr-4 py-2 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary outline-none transition-all"
                 value={filters.fecha_inicio}
-                onChange={e => setFilters(prev => ({ ...prev, fecha_inicio: e.target.value }))}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFilters(prev => ({ ...prev, fecha_inicio: e.target.value }))}
               />
             </div>
           </div>
@@ -123,7 +121,7 @@ export default function Movements() {
                 type="date"
                 className="w-full pl-10 pr-4 py-2 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary outline-none transition-all"
                 value={filters.fecha_fin}
-                onChange={e => setFilters(prev => ({ ...prev, fecha_fin: e.target.value }))}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFilters(prev => ({ ...prev, fecha_fin: e.target.value }))}
               />
             </div>
           </div>
@@ -134,7 +132,7 @@ export default function Movements() {
               <select
                 className="w-full pl-10 pr-4 py-2 bg-background border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary outline-none appearance-none"
                 value={filters.estado}
-                onChange={e => setFilters(prev => ({ ...prev, estado: e.target.value }))}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilters(prev => ({ ...prev, estado: e.target.value }))}
               >
                 <option value="todos">Todos</option>
                 <option value="activos">Solo Activos</option>

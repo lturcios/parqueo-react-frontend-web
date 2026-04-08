@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../lib/api';
-import type { Rate, Movement } from '../types/index';
-import { Car, Search, ArrowRight, CheckCircle2, AlertCircle, Loader2, LogIn, LogOut } from 'lucide-react';
+import type { Rate } from '../types/index';
+import { Search, CheckCircle2, AlertCircle, Loader2, LogIn, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn, formatCurrency } from '../lib/utils';
 
@@ -98,7 +98,7 @@ export default function Parking() {
                 className="w-full px-4 py-2.5 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all uppercase font-mono text-lg tracking-widest"
                 placeholder="P 000-000"
                 value={placa}
-                onChange={e => setPlaca(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPlaca(e.target.value)}
               />
             </div>
 
@@ -152,7 +152,7 @@ export default function Parking() {
                   className="w-full pl-11 pr-4 py-2.5 bg-background border border-border rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all font-mono"
                   placeholder="Ingrese el ID del ticket"
                   value={pagoID}
-                  onChange={e => setPagoID(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPagoID(e.target.value)}
                 />
               </div>
               <p className="text-xs text-muted-foreground px-1">Escanee o ingrese manualmente el código del ticket.</p>

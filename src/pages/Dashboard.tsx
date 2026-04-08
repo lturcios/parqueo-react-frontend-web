@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import api from '../lib/api';
 import type { DashboardStats, AnalyticsData } from '../types/index';
-import { Car, Clock, DollarSign, TrendingUp, BarChart3 } from 'lucide-react';
+import { Car, DollarSign, TrendingUp, BarChart3 } from 'lucide-react';
 import { formatCurrency, cn } from '../lib/utils';
 import { motion } from 'framer-motion';
 import { 
@@ -173,7 +173,7 @@ export default function Dashboard() {
                     fontSize: '12px',
                     fontWeight: 'bold'
                   }}
-                  formatter={(value: number) => [formatCurrency(value), 'Ingresos']}
+                  formatter={(value: any) => [formatCurrency(value as number), 'Ingresos']}
                 />
                 <Area 
                   type="monotone" 

@@ -1,6 +1,5 @@
 import { useSettings } from '../hooks/useSettings';
-import { ShieldCheck, Monitor, RefreshCcw, Save, Info } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Monitor, RefreshCcw, Info } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 export default function Settings() {
@@ -70,7 +69,7 @@ export default function Settings() {
               <select 
                 className="w-full p-2 bg-background border border-border rounded-lg outline-none focus:ring-2 focus:ring-primary"
                 value={settings.refreshRate}
-                onChange={(e) => updateSettings({ refreshRate: Number(e.target.value) })}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => updateSettings({ refreshRate: Number(e.target.value) })}
               >
                 <option value={15}>Cada 15 segundos</option>
                 <option value={30}>Cada 30 segundos (Recomendado)</option>
