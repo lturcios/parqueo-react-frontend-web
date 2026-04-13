@@ -176,14 +176,14 @@ export default function Movements() {
                     <td colSpan={6} className="px-6 py-8 bg-muted/10"></td>
                   </tr>
                 ))
-              ) : data?.movements.length === 0 ? (
+              ) : (data?.movements?.length ?? 0) === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center text-muted-foreground italic">
                     No se encontraron movimientos.
                   </td>
                 </tr>
               ) : (
-                data?.movements.map((m, index) => {
+                data?.movements?.map((m, index) => {
                   const isClosed = m.fecha_hora_sale && !m.fecha_hora_sale.startsWith('0001');
                   
                   return (

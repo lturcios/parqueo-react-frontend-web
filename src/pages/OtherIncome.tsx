@@ -13,7 +13,7 @@ import {
   Loader2,
   CheckCircle2
 } from 'lucide-react';
-import { formatCurrency, cn } from '../lib/utils';
+import { formatCurrency } from '../lib/utils';
 import { motion } from 'framer-motion';
 
 export default function OtherIncome() {
@@ -107,7 +107,7 @@ export default function OtherIncome() {
               >
                 <option value="0">Todos los servicios</option>
                 {rates?.map(rate => (
-                  <option key={rate.id} value={rate.codigo_presup}>{rate.descripcion}</p>
+                  <option key={rate.id} value={rate.codigo_presup}>{rate.descripcion}</option>
                 ))}
               </select>
             </div>
