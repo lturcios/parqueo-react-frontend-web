@@ -30,6 +30,7 @@ export interface Movement {
   serie_entrada: string;
   usuario_entrada: string;
   ubicacion_id: number;
+  tarifa_descripcion?: string;
 }
 
 export interface DashboardStats {

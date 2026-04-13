@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Parking from './pages/Parking';
 import Movements from './pages/Movements';
+import OtherIncome from './pages/OtherIncome';
 import Settings from './pages/Settings';
 import './index.css';
 
@@ -49,6 +50,13 @@ function App() {
             <ProtectedRoute>
               <DashboardLayout>
                 <Movements />
+              </DashboardLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/other-income" element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <OtherIncome />
               </DashboardLayout>
             </ProtectedRoute>
           } />

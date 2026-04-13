@@ -18,16 +18,19 @@ import {
 } from 'lucide-react';
 import { formatCurrency, cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSearchParams } from 'react-router-dom';
 
 export default function Movements() {
   const queryClient = useQueryClient();
+  const [searchParams] = useSearchParams();
   const [page, setPage] = useState(1);
   const [pageSize] = useState(15);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  
   const [filters, setFilters] = useState({
-    fecha_inicio: new Date().toISOString().split('T')[0],
-    fecha_fin: new Date().toISOString().split('T')[0],
-    estado: 'todos'
+    fecha_inicio: searchParams.get('fecha_inicio') || new Date().toISOString().split('T')[0],
+    fecha_fin: searchParams.get('fecha_fin') || new Date().toISOString().split('T')[0],
+    estado: searchParams.get('estado') || 'todos'
   });
 
   // Reset page when filters change
@@ -39,7 +42,7 @@ export default function Movements() {
     queryKey: ['movements', filters, page],
     queryFn: async () => {
       const { data } = await api.get('/movements', { 
-        params: { ...filters, page, pageSize } 
+        params: { ...filters, page, pageSize, tipo: 'normal' } 
       });
       return data;
     }

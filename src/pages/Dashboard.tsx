@@ -4,6 +4,7 @@ import type { DashboardStats, AnalyticsData } from '../types/index';
 import { Car, DollarSign, TrendingUp, BarChart3 } from 'lucide-react';
 import { formatCurrency, cn } from '../lib/utils';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { 
   BarChart, 
   Bar, 
@@ -17,6 +18,7 @@ import {
 } from 'recharts';
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const { data: stats, isLoading: statsLoading } = useQuery<DashboardStats>({
     queryKey: ['dashboard-stats'],
     queryFn: async () => {
@@ -35,6 +37,8 @@ export default function Dashboard() {
     refetchInterval: 60000,
   });
 
+  const today = new Date().toISOString().split('T')[0];
+
   const cards = [
     {
       title: 'Movimientos Totales',
@@ -42,6 +46,7 @@ export default function Dashboard() {
       icon: TrendingUp,
       color: 'text-blue-500',
       bg: 'bg-blue-500/10',
+      onClick: () => navigate(`/movements?fecha_inicio=${today}&fecha_fin=${today}&estado=todos`),
     },
     {
       title: 'Vehículos Activos',
@@ -49,6 +54,7 @@ export default function Dashboard() {
       icon: Car,
       color: 'text-orange-500',
       bg: 'bg-orange-500/10',
+      onClick: () => navigate(`/movements?estado=activos`),
     },
     {
       title: 'Ingresos del Día',
@@ -91,7 +97,11 @@ export default function Dashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="p-6 bg-card border border-border rounded-2xl shadow-sm hover:shadow-md transition-all group"
+            onClick={card.onClick}
+            className={cn(
+              "p-6 bg-card border border-border rounded-2xl shadow-sm hover:shadow-md transition-all group",
+              card.onClick && "cursor-pointer hover:border-primary/50"
+            )}
           >
             <div className="flex items-center justify-between">
               <div>

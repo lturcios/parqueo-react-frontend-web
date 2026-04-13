@@ -10,7 +10,8 @@ import {
   Moon, 
   Sun,
   Menu,
-  X
+  X,
+  Receipt
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '../lib/utils';
@@ -36,6 +37,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     { name: 'Dashboard', href: '/', icon: LayoutDashboard, show: true },
     { name: 'Entrada/Salida', href: '/parking', icon: Car, show: settings.allowWebEntry },
     { name: 'Movimientos', href: '/movements', icon: History, show: true },
+    { name: 'Otros Ingresos', href: '/other-income', icon: Receipt, show: true },
     { name: 'Configuración', href: '/settings', icon: SettingsIcon, show: true },
   ].filter(item => item.show);
 

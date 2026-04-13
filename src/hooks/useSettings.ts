@@ -6,7 +6,7 @@ export interface AppSettings {
 }
 
 const DEFAULT_SETTINGS: AppSettings = {
-  allowWebEntry: true,
+  allowWebEntry: false,
   refreshRate: 30,
 };
 
