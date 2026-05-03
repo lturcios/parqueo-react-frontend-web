@@ -222,8 +222,17 @@ export default function Movements() {
                           </div>
                         )}
                       </td>
-                      <td className="px-6 py-4 font-black text-lg text-primary">
-                        {isClosed ? formatCurrency(m.monto_total) : "-"}
+                      <td className="px-6 py-4 font-black text-lg">
+                        <span className={cn(
+                          isClosed ? "text-primary" : "text-orange-600"
+                        )}>
+                          {formatCurrency(m.monto_total)}
+                        </span>
+                        {!isClosed && (
+                           <div className="flex items-center gap-1 mt-1">
+                              <span className="text-[9px] font-black uppercase bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-md border border-orange-200">Estimado</span>
+                           </div>
+                        )}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex justify-center">
@@ -300,8 +309,13 @@ export default function Movements() {
                     )}>
                       {isClosed ? 'Cerrado' : 'Activo'}
                     </p>
-                    {isClosed && (
+                    {isClosed ? (
                       <p className="text-xl font-black text-primary mt-1">{formatCurrency(m.monto_total)}</p>
+                    ) : (
+                      <div className="mt-1 text-right">
+                        <p className="text-xl font-black text-orange-600 leading-none">{formatCurrency(m.monto_total)}</p>
+                        <span className="text-[8px] font-black uppercase bg-orange-100 text-orange-700 px-1 rounded border border-orange-200">Estimado</span>
+                      </div>
                     )}
                   </div>
                 </div>
