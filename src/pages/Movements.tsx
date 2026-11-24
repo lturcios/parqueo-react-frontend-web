@@ -16,7 +16,7 @@ import {
   Loader2,
   Clock
 } from 'lucide-react';
-import { formatCurrency, cn } from '../lib/utils';
+import { formatCurrency, cn, toLocalDateString } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
 
@@ -28,8 +28,8 @@ export default function Movements() {
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   
   const [filters, setFilters] = useState({
-    fecha_inicio: searchParams.get('fecha_inicio') || new Date().toISOString().split('T')[0],
-    fecha_fin: searchParams.get('fecha_fin') || new Date().toISOString().split('T')[0],
+    fecha_inicio: searchParams.get('fecha_inicio') || toLocalDateString(),
+    fecha_fin: searchParams.get('fecha_fin') || toLocalDateString(),
     estado: searchParams.get('estado') || 'todos',
     proyeccion: false
   });

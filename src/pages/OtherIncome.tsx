@@ -13,7 +13,7 @@ import {
   Loader2,
   CheckCircle2
 } from 'lucide-react';
-import { formatCurrency } from '../lib/utils';
+import { formatCurrency, toLocalDateString } from '../lib/utils';
 import { motion } from 'framer-motion';
 
 export default function OtherIncome() {
@@ -21,8 +21,8 @@ export default function OtherIncome() {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(15);
   const [filters, setFilters] = useState({
-    fecha_inicio: new Date().toISOString().split('T')[0],
-    fecha_fin: new Date().toISOString().split('T')[0],
+    fecha_inicio: toLocalDateString(),
+    fecha_fin: toLocalDateString(),
     tarifa_id: '0'
   });
 

@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import api from '../lib/api';
 import type { DashboardStats, AnalyticsData } from '../types/index';
 import { Car, DollarSign, TrendingUp, BarChart3 } from 'lucide-react';
-import { formatCurrency, cn } from '../lib/utils';
+import { formatCurrency, cn, toLocalDateString } from '../lib/utils';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -37,7 +37,7 @@ export default function Dashboard() {
     refetchInterval: 60000,
   });
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = toLocalDateString();
 
   const cards = [
     {
