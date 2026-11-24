@@ -30,7 +30,8 @@ export default function Movements() {
   const [filters, setFilters] = useState({
     fecha_inicio: searchParams.get('fecha_inicio') || new Date().toISOString().split('T')[0],
     fecha_fin: searchParams.get('fecha_fin') || new Date().toISOString().split('T')[0],
-    estado: searchParams.get('estado') || 'todos'
+    estado: searchParams.get('estado') || 'todos',
+    proyeccion: false
   });
 
   // Reset page when filters change
@@ -41,8 +42,11 @@ export default function Movements() {
   const { data, isLoading, isFetching } = useQuery<MovementsResponse>({
     queryKey: ['movements', filters, page],
     queryFn: async () => {
-      const { data } = await api.get('/movements', { 
-        params: { ...filters, page, pageSize, tipo: 'normal' } 
+      const { proyeccion, ...rest } = filters;
+      // Projection only applies to "todos"; "activos" always projects on the server.
+      const projection = rest.estado === 'todos' && proyeccion ? { proyeccion: true } : {};
+      const { data } = await api.get('/movements', {
+        params: { ...rest, ...projection, page, pageSize, tipo: 'normal' }
       });
       return data;
     }
@@ -142,6 +146,17 @@ export default function Movements() {
                 <option value="cerrados">Solo Cerrados</option>
               </select>
             </div>
+            {filters.estado === 'todos' && (
+              <label className="flex items-center gap-2 ml-1 pt-1 text-xs font-medium text-muted-foreground cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 accent-primary cursor-pointer"
+                  checked={filters.proyeccion}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFilters(prev => ({ ...prev, proyeccion: e.target.checked }))}
+                />
+                Mostrar monto estimado de activos
+              </label>
+            )}
           </div>
           <div className="flex items-end">
             <button 
