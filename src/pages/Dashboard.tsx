@@ -5,6 +5,7 @@ import { Car, DollarSign, TrendingUp, BarChart3 } from 'lucide-react';
 import { formatCurrency, cn, toLocalDateString } from '../lib/utils';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useSettings } from '../hooks/useSettings';
 import { 
   BarChart, 
   Bar, 
@@ -17,15 +18,22 @@ import {
   Area 
 } from 'recharts';
 
+// The hourly chart is the heavier query and changes slowly, so it never refreshes faster than this.
+const MIN_ANALYTICS_REFRESH_SECONDS = 60;
+const DEFAULT_REFRESH_SECONDS = 30;
+
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { settings } = useSettings();
+  const refreshSeconds = settings.refreshRate > 0 ? settings.refreshRate : DEFAULT_REFRESH_SECONDS;
+
   const { data: stats, isLoading: statsLoading } = useQuery<DashboardStats>({
     queryKey: ['dashboard-stats'],
     queryFn: async () => {
       const { data } = await api.get('/dashboard/stats');
       return data;
     },
-    refetchInterval: 30000,
+    refetchInterval: refreshSeconds * 1000,
   });
 
   const { data: analytics, isLoading: analyticsLoading } = useQuery<AnalyticsData[]>({
@@ -34,7 +42,7 @@ export default function Dashboard() {
       const { data } = await api.get('/dashboard/analytics');
       return data;
     },
-    refetchInterval: 60000,
+    refetchInterval: Math.max(refreshSeconds, MIN_ANALYTICS_REFRESH_SECONDS) * 1000,
   });
 
   const today = toLocalDateString();
