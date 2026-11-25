@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import api from '../lib/api';
 import type { DashboardStats, AnalyticsData } from '../types/index';
-import { Car, DollarSign, TrendingUp, BarChart3 } from 'lucide-react';
+import { Car, DollarSign, TrendingUp, BarChart3, AlertCircle, RefreshCw } from 'lucide-react';
 import { formatCurrency, cn, toLocalDateString } from '../lib/utils';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -27,7 +27,13 @@ export default function Dashboard() {
   const { settings } = useSettings();
   const refreshSeconds = settings.refreshRate > 0 ? settings.refreshRate : DEFAULT_REFRESH_SECONDS;
 
-  const { data: stats, isLoading: statsLoading } = useQuery<DashboardStats>({
+  const {
+    data: stats,
+    isLoading: statsLoading,
+    isError: statsError,
+    isFetching: statsFetching,
+    refetch: refetchStats,
+  } = useQuery<DashboardStats>({
     queryKey: ['dashboard-stats'],
     queryFn: async () => {
       const { data } = await api.get('/dashboard/stats');
@@ -36,7 +42,13 @@ export default function Dashboard() {
     refetchInterval: refreshSeconds * 1000,
   });
 
-  const { data: analytics, isLoading: analyticsLoading } = useQuery<AnalyticsData[]>({
+  const {
+    data: analytics,
+    isLoading: analyticsLoading,
+    isError: analyticsError,
+    isFetching: analyticsFetching,
+    refetch: refetchAnalytics,
+  } = useQuery<AnalyticsData[]>({
     queryKey: ['dashboard-analytics'],
     queryFn: async () => {
       const { data } = await api.get('/dashboard/analytics');
@@ -46,11 +58,20 @@ export default function Dashboard() {
   });
 
   const today = toLocalDateString();
+  const hasError = statsError || analyticsError;
+  const isRetrying = statsFetching || analyticsFetching;
+  // Without data, a failed request must not look like a quiet day with zero movements.
+  const placeholder = '—';
+
+  const retry = () => {
+    if (statsError) refetchStats();
+    if (analyticsError) refetchAnalytics();
+  };
 
   const cards = [
     {
       title: 'Movimientos Totales',
-      value: stats?.total ?? 0,
+      value: stats?.total ?? placeholder,
       icon: TrendingUp,
       color: 'text-blue-500',
       bg: 'bg-blue-500/10',
@@ -58,7 +79,7 @@ export default function Dashboard() {
     },
     {
       title: 'Vehículos Activos',
-      value: stats?.activos ?? 0,
+      value: stats?.activos ?? placeholder,
       icon: Car,
       color: 'text-orange-500',
       bg: 'bg-orange-500/10',
@@ -66,7 +87,7 @@ export default function Dashboard() {
     },
     {
       title: 'Ingresos del Día',
-      value: formatCurrency(stats?.ingresos ?? 0),
+      value: stats ? formatCurrency(stats.ingresos) : placeholder,
       icon: DollarSign,
       color: 'text-green-500',
       bg: 'bg-green-500/10',
@@ -97,6 +118,33 @@ export default function Dashboard() {
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
         <p className="text-muted-foreground">Estado del sistema en tiempo real.</p>
       </div>
+
+      {hasError && (
+        <div
+          role="alert"
+          className="p-4 rounded-xl bg-destructive/10 text-destructive flex flex-col sm:flex-row sm:items-center gap-3 text-sm"
+        >
+          <div className="flex items-center gap-3 flex-1">
+            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <p>
+              No se pudieron cargar los datos del dashboard.{' '}
+              {stats || analytics
+                ? 'Se muestran los últimos datos obtenidos.'
+                : 'Los indicadores no están disponibles.'}{' '}
+              Se reintentará automáticamente.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={retry}
+            disabled={isRetrying}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-destructive/30 font-bold hover:bg-destructive/10 transition-colors disabled:opacity-50"
+          >
+            <RefreshCw className={cn('w-4 h-4', isRetrying && 'animate-spin')} />
+            Reintentar
+          </button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {cards.map((card, index) => (
