@@ -61,12 +61,14 @@ export function buildMovementsReport(report: MovementsReport): jsPDF {
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const s = report.resumen;
+  const institucion = report.institucion || 'Institución';
+  const ubicacion = report.ubicacion || 'Ubicación';
   let y = MARGIN + 4;
 
   // Header: institution (H1) and location (H2).
-  doc.setFont('helvetica', 'bold').setFontSize(16).text(report.institucion || 'Institución', MARGIN, y);
+  doc.setFont('helvetica', 'bold').setFontSize(16).text(institucion, MARGIN, y);
   y += 7;
-  doc.setFontSize(12).text(report.ubicacion || 'Ubicación', MARGIN, y);
+  doc.setFontSize(12).text(ubicacion, MARGIN, y);
   y += 7;
   doc.setFont('helvetica', 'normal').setFontSize(10).text('Informe de movimientos', MARGIN, y);
   y += 5;
@@ -179,7 +181,7 @@ export function buildMovementsReport(report: MovementsReport): jsPDF {
   for (let page = 1; page <= pages; page++) {
     doc.setPage(page);
     doc.setFont('helvetica', 'normal').setFontSize(7).setTextColor(120);
-    doc.text(`${report.institucion} · ${report.ubicacion}`, MARGIN, pageHeight - MARGIN / 2);
+    doc.text(`${institucion} · ${ubicacion}`, MARGIN, pageHeight - MARGIN / 2);
     doc.text(`Página ${page} de ${pages}`, pageWidth - MARGIN, pageHeight - MARGIN / 2, { align: 'right' });
   }
   doc.setTextColor(0);
