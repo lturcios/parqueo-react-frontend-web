@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../lib/api';
-import type { Features, Movement, MovementsResponse } from '../types/index';
+import type { Features, Movement, MovementsReport, MovementsResponse } from '../types/index';
 import ChangeRateDialog from '../components/ChangeRateDialog';
 import { 
   Search, 
@@ -29,6 +29,7 @@ export default function Movements() {
   const [pageSize] = useState(15);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const [rateTarget, setRateTarget] = useState<Movement | null>(null);
+  const [generatingReport, setGeneratingReport] = useState(false);
   
   const [filters, setFilters] = useState({
     fecha_inicio: searchParams.get('fecha_inicio') || toLocalDateString(),
@@ -94,6 +95,29 @@ export default function Movements() {
     setTimeout(() => setMessage(null), 5000);
   };
 
+  const downloadReport = async () => {
+    setGeneratingReport(true);
+    try {
+      const { data: report } = await api.get<MovementsReport>('/reports/movements', {
+        params: { fecha_inicio: filters.fecha_inicio, fecha_fin: filters.fecha_fin, estado: filters.estado },
+      });
+      // Loaded on demand so jsPDF stays out of the main bundle.
+      const { buildMovementsReport, reportFileName } = await import('../lib/movementsReport');
+      buildMovementsReport(report).save(reportFileName(report));
+    } catch (err: any) {
+      const status = err.response?.status;
+      const text = status === 422
+        ? 'El informe tiene demasiados movimientos. Reduzca el rango de fechas.'
+        : status === 400
+          ? 'Revise el rango de fechas: la fecha final no puede ser anterior a la inicial y el máximo es de 93 días.'
+          : 'No se pudo generar el informe. Intente de nuevo.';
+      setMessage({ type: 'error', text });
+      setTimeout(() => setMessage(null), 5000);
+    } finally {
+      setGeneratingReport(false);
+    }
+  };
+
   const totalPages = Math.ceil((data?.total_count ?? 0) / pageSize);
 
   return (
@@ -108,8 +132,15 @@ export default function Movements() {
               <p className="text-[10px] font-bold uppercase tracking-wider text-primary opacity-70">Total Ingresos</p>
               <p className="text-xl md:text-2xl font-black text-primary">{formatCurrency(data?.total_ingresos ?? 0)}</p>
            </div>
-           <button className="p-2 bg-primary text-white rounded-xl shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
-              <Download className="w-5 h-5 md:w-6 h-6" />
+           <button
+              type="button"
+              onClick={downloadReport}
+              disabled={generatingReport}
+              title="Descargar informe PDF"
+              aria-label="Descargar informe PDF"
+              className="p-2 bg-primary text-white rounded-xl shadow-lg shadow-primary/20 hover:scale-105 transition-transform disabled:opacity-60 disabled:hover:scale-100"
+            >
+              {generatingReport ? <Loader2 className="w-5 h-5 md:w-6 md:h-6 animate-spin" /> : <Download className="w-5 h-5 md:w-6 md:h-6" />}
            </button>
         </div>
       </div>
