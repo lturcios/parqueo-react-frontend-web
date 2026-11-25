@@ -8,7 +8,13 @@ import { formatCurrency } from '../lib/utils';
 interface ChangeRateDialogProps {
   movement: Movement;
   onClose: () => void;
-  onChanged: () => void;
+  onChanged: (mysqlUpdated: boolean) => void;
+}
+
+interface ChangeRateResponse {
+  pago_id: string;
+  codigo_presup: number;
+  mysql_actualizado: boolean;
 }
 
 // Vehicle rates have no icon or an icon up to 10; "otros ingresos" use higher icons.
@@ -57,8 +63,11 @@ export default function ChangeRateDialog({ movement, onClose, onChanged }: Chang
   const options = useMemo(() => vehicleRateOptions(rates ?? [], movement.codigo_presup), [rates, movement.codigo_presup]);
 
   const mutation = useMutation({
-    mutationFn: (codigo: number) => api.patch(`/movements/${encodeURIComponent(movement.pago_id)}/tarifa`, { codigo_presup: codigo }),
-    onSuccess: onChanged,
+    mutationFn: async (codigo: number) => {
+      const { data } = await api.patch<ChangeRateResponse>(`/movements/${encodeURIComponent(movement.pago_id)}/tarifa`, { codigo_presup: codigo });
+      return data;
+    },
+    onSuccess: data => onChanged(data.mysql_actualizado === true),
   });
 
   useEffect(() => {
@@ -121,7 +130,7 @@ export default function ChangeRateDialog({ movement, onClose, onChanged }: Chang
         </div>
 
         <p className="text-xs text-muted-foreground">
-          Solo cambia la tarifa del ticket y queda registrado en sus observaciones. El dispositivo lo recibe al instante; este listado lo mostrará cuando se complete la sincronización.
+          Solo cambia la tarifa del ticket y queda registrado en sus observaciones. El dispositivo lo recibe al instante.
         </p>
 
         {mutation.isError && <p role="alert" className="text-sm text-destructive">{errorMessage(mutation.error)}</p>}

@@ -82,9 +82,14 @@ export default function Movements() {
   });
   const canChangeRate = features?.cambio_tarifa === true;
 
-  const handleRateChanged = () => {
+  const handleRateChanged = (mysqlUpdated: boolean) => {
     setRateTarget(null);
-    setMessage({ type: 'success', text: 'Tarifa cambiada. El listado la mostrará cuando se complete la sincronización.' });
+    setMessage({
+      type: 'success',
+      text: mysqlUpdated
+        ? 'Tarifa cambiada correctamente.'
+        : 'Tarifa cambiada en el dispositivo. El listado la mostrará cuando se complete la sincronización.',
+    });
     queryClient.invalidateQueries({ queryKey: ['movements'] });
     setTimeout(() => setMessage(null), 5000);
   };
