@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../lib/api';
-import type { MovementsResponse } from '../types/index';
+import type { Features, Movement, MovementsResponse } from '../types/index';
+import ChangeRateDialog from '../components/ChangeRateDialog';
 import { 
   Search, 
   Filter, 
@@ -14,7 +15,8 @@ import {
   CheckCircle2, 
   AlertCircle, 
   Loader2,
-  Clock
+  Clock,
+  Tag
 } from 'lucide-react';
 import { formatCurrency, cn, toLocalDateString } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -26,6 +28,7 @@ export default function Movements() {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(15);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [rateTarget, setRateTarget] = useState<Movement | null>(null);
   
   const [filters, setFilters] = useState({
     fecha_inicio: searchParams.get('fecha_inicio') || toLocalDateString(),
@@ -67,6 +70,24 @@ export default function Movements() {
       setTimeout(() => setMessage(null), 5000);
     }
   });
+
+  // Only locations connected to Firestore can change the rate of an active ticket.
+  const { data: features } = useQuery<Features>({
+    queryKey: ['features'],
+    queryFn: async () => {
+      const { data } = await api.get('/features');
+      return data;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+  const canChangeRate = features?.cambio_tarifa === true;
+
+  const handleRateChanged = () => {
+    setRateTarget(null);
+    setMessage({ type: 'success', text: 'Tarifa cambiada. El listado la mostrará cuando se complete la sincronización.' });
+    queryClient.invalidateQueries({ queryKey: ['movements'] });
+    setTimeout(() => setMessage(null), 5000);
+  };
 
   const totalPages = Math.ceil((data?.total_count ?? 0) / pageSize);
 
@@ -261,7 +282,16 @@ export default function Movements() {
                           </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-6 py-4 text-right space-x-1">
+                        {!isClosed && canChangeRate && (
+                          <button
+                            onClick={() => setRateTarget(m)}
+                            className="p-2 text-primary hover:bg-primary/10 rounded-xl transition-all inline-flex items-center gap-1 text-xs font-bold border border-transparent hover:border-primary/20"
+                          >
+                            <Tag className="w-4 h-4" />
+                            Tarifa
+                          </button>
+                        )}
                         {!isClosed && (
                           <button
                             onClick={() => {
@@ -354,6 +384,16 @@ export default function Movements() {
                   </div>
                 </div>
 
+                {!isClosed && canChangeRate && (
+                  <button
+                    onClick={() => setRateTarget(m)}
+                    className="w-full py-3 bg-primary/5 text-primary rounded-xl text-sm font-black uppercase tracking-widest border border-primary/10 flex items-center justify-center gap-2 active:bg-primary/10 transition-colors"
+                  >
+                    <Tag className="w-4 h-4" />
+                    Cambiar Tarifa
+                  </button>
+                )}
+
                 {!isClosed && (
                   <button
                     onClick={() => {
@@ -372,6 +412,10 @@ export default function Movements() {
           })
         )}
       </div>
+
+      {rateTarget && (
+        <ChangeRateDialog movement={rateTarget} onClose={() => setRateTarget(null)} onChanged={handleRateChanged} />
+      )}
 
       {/* Paginación PRO */}
       <div className="bg-card border border-border rounded-2xl p-4 shadow-md flex flex-col md:flex-row items-center justify-between gap-4">
