@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTheme } from '../hooks/useTheme';
-import { useSettings } from '../hooks/useSettings';
 import { 
   LayoutDashboard, 
   Car, 
@@ -22,7 +21,6 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { theme, toggleTheme } = useTheme();
-  const { settings } = useSettings();
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -35,7 +33,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const navigation = [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard, show: true },
-    { name: 'Entrada/Salida', href: '/parking', icon: Car, show: settings.allowWebEntry },
     { name: 'Movimientos', href: '/movements', icon: History, show: true },
     { name: 'Otros Ingresos', href: '/other-income', icon: Receipt, show: true },
     { name: 'Configuración', href: '/settings', icon: SettingsIcon, show: true },

@@ -1,12 +1,10 @@
 import { useState } from 'react';
 
 export interface AppSettings {
-  allowWebEntry: boolean;
   refreshRate: number;
 }
 
 const DEFAULT_SETTINGS: AppSettings = {
-  allowWebEntry: false,
   refreshRate: 30,
 };
 

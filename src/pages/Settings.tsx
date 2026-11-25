@@ -1,6 +1,5 @@
 import { useSettings } from '../hooks/useSettings';
-import { Monitor, RefreshCcw, Info } from 'lucide-react';
-import { cn } from '../lib/utils';
+import { RefreshCcw, Info } from 'lucide-react';
 
 export default function Settings() {
   const { settings, updateSettings } = useSettings();
@@ -13,44 +12,6 @@ export default function Settings() {
       </div>
 
       <div className="grid grid-cols-1 gap-6">
-        {/* Sección: Operación */}
-        <section className="bg-card border border-border rounded-2xl p-6 shadow-sm space-y-6">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary/10 text-primary">
-              <Monitor className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold">Control de Operación</h3>
-              <p className="text-sm text-muted-foreground">Define qué módulos están disponibles en la plataforma web.</p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-muted/30 rounded-xl border border-border transition-all hover:bg-muted/50">
-              <div className="space-y-0.5">
-                <p className="font-bold">Habilitar Registro de Entrada/Salida</p>
-                <p className="text-xs text-muted-foreground max-w-md">
-                  Si se desactiva, los operarios no podrán registrar vehículos desde la web. Recomendado si solo usa la app Android (Sunmi).
-                </p>
-              </div>
-              <button
-                onClick={() => updateSettings({ allowWebEntry: !settings.allowWebEntry })}
-                className={cn(
-                  "relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
-                  settings.allowWebEntry ? "bg-primary" : "bg-muted-foreground/30"
-                )}
-              >
-                <span
-                  className={cn(
-                    "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
-                    settings.allowWebEntry ? "translate-x-6" : "translate-x-1"
-                  )}
-                />
-              </button>
-            </div>
-          </div>
-        </section>
-
         {/* Sección: Interfaz */}
         <section className="bg-card border border-border rounded-2xl p-6 shadow-sm space-y-6">
           <div className="flex items-center gap-3">

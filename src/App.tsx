@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import DashboardLayout from './components/DashboardLayout';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
-import Parking from './pages/Parking';
 import Movements from './pages/Movements';
 import OtherIncome from './pages/OtherIncome';
 import Settings from './pages/Settings';
@@ -36,13 +35,6 @@ function App() {
             <ProtectedRoute>
               <DashboardLayout>
                 <Dashboard />
-              </DashboardLayout>
-            </ProtectedRoute>
-          } />
-          <Route path="/parking" element={
-            <ProtectedRoute>
-              <DashboardLayout>
-                <Parking />
               </DashboardLayout>
             </ProtectedRoute>
           } />
