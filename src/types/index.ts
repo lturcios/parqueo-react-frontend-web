@@ -19,6 +19,7 @@ export interface Rate {
   tiempo_minimo: number;
   tiempo_maximo: number;
   tiempo_tolerancia: number;
+  icon_file?: number | null;
 }
 
 export interface Movement {
@@ -26,6 +27,7 @@ export interface Movement {
   fecha_hora_entra: string;
   fecha_hora_sale?: string;
   placa: string;
+  codigo_presup: number;
   monto_total: number;
   serie_entrada: string;
   usuario_entrada: string;
@@ -43,6 +45,10 @@ export interface AnalyticsData {
   hour: number;
   count: number;
   ingresos: number;
+}
+
+export interface Features {
+  cambio_tarifa: boolean;
 }
 
 export interface MovementsResponse {
